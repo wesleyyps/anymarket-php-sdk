@@ -1,5 +1,5 @@
 <?php
-namespace Yampi\Anymarket\Service;
+namespace Yampi\Anymarket\Services;
 
 use Closure;
 use Exception;
