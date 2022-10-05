@@ -2,11 +2,9 @@
 
 namespace Yampi\Anymarket\Services;
 
-use GuzzleHttp\Exception\ClientException;
+use Closure;
 use Yampi\Anymarket\Anymarket;
 use Yampi\Anymarket\Contracts\BaseRequestInterface;
-use Yampi\Anymarket\Exceptions\AnymarketException;
-use Yampi\Anymarket\Exceptions\AnymarketValidationException;
 
 abstract class BaseRequest implements BaseRequestInterface
 {
@@ -15,6 +13,8 @@ abstract class BaseRequest implements BaseRequestInterface
     protected $service;
 
     protected $http;
+
+    protected $anymarket;
 
     public function __construct(Anymarket $anymarket, $service, $http)
     {
@@ -65,9 +65,16 @@ abstract class BaseRequest implements BaseRequestInterface
         return $this->sendRequest('DELETE', $url);
     }
 
+    /**
+     * @param string $method
+     * @param string $url
+     * @return mixed
+     * @throws Yampi\Anymarket\Exceptions\AnymarketException
+     * @throws Yampi\Anymarket\Exceptions\AnymarketValidationException
+     */
     public function sendRequest($method, $url)
     {
-        try {
+        return $this->anymarket->getRequestHandler()->handle(Closure::bind(function() use ($method, $url) {
             $requestParams = [];
 
             if (in_array($method, ['PUT', 'POST'])) {
@@ -79,12 +86,6 @@ abstract class BaseRequest implements BaseRequestInterface
             $request = $this->http->request($method, $url, $requestParams);
 
             return json_decode($request->getBody()->getContents(), true);
-        } catch (ClientException $e) {
-            if ($e->getCode() == 422) {
-                throw new AnymarketValidationException($e->getMessage(), $e->getCode());
-            }
-
-            throw new AnymarketException($e->getMessage(), $e->getCode());
-        }
+        }, $this));
     }
 }

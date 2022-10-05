@@ -3,6 +3,8 @@
 namespace Yampi\Anymarket;
 
 use GuzzleHttp\Client as Client;
+use Yampi\Anymarket\Contracts\RequestHandlerInterface;
+use Yampi\Anymarket\Service\RequestHandler;
 use Yampi\Anymarket\Services\Brand;
 use Yampi\Anymarket\Services\Callback;
 use Yampi\Anymarket\Services\Category;
@@ -40,8 +42,13 @@ class Anymarket
 
     protected $callback;
 
-    public function __construct($token, Environment $environment, $http = null)
+    protected $requestHandler;
+
+    public function __construct($token, Environment $environment, $http = null, RequestHandlerInterface $requestHandler = null)
     {
+        if (is_null($requestHandler)) {
+            $requestHandler = new RequestHandler();
+        }
         $this->endpoint = $environment->getEndpoint();
         $this->token = $token;
 
@@ -51,6 +58,8 @@ class Anymarket
                 'Content-Type' => 'application/json',
             ],
         ]);
+
+        $this->requestHandler = $requestHandler;
 
         $this->product = new Product($this, $this->http);
         $this->brand = new Brand($this, $this->http);
@@ -121,5 +130,13 @@ class Anymarket
     public function getEndpoint()
     {
         return $this->endpoint;
+    }
+
+    /**
+     * @return RequestHandlerInterface
+     */
+    public function getRequestHandler()
+    {
+        return $this->requestHandler;
     }
 }
