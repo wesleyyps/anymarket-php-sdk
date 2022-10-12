@@ -11,6 +11,7 @@ use Yampi\Anymarket\Services\Category;
 use Yampi\Anymarket\Services\Environment;
 use Yampi\Anymarket\Services\Order;
 use Yampi\Anymarket\Services\Product;
+use Yampi\Anymarket\Services\ProductImage;
 use Yampi\Anymarket\Services\Sku;
 use Yampi\Anymarket\Services\Stock;
 use Yampi\Anymarket\Services\Variation;
@@ -42,6 +43,8 @@ class Anymarket
 
     protected $callback;
 
+    protected $productImage;
+
     protected $requestHandler;
 
     public function __construct($token, Environment $environment, $http = null, RequestHandlerInterface $requestHandler = null)
@@ -70,6 +73,7 @@ class Anymarket
         $this->variation = new Variation($this, $this->http);
         $this->variationValue = new VariationValue($this, $this->http);
         $this->callback = new Callback($this, $this->http);
+        $this->productImage = new ProductImage($this, $this->http);
     }
 
     public function getToken()
@@ -125,6 +129,11 @@ class Anymarket
     public function callback()
     {
         return $this->callback;
+    }
+
+    public function productImage()
+    {
+        return $this->productImage;
     }
 
     public function getEndpoint()
