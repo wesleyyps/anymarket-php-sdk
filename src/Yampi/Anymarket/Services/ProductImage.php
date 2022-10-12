@@ -46,7 +46,7 @@ class ProductImage implements ProductImageInterface
 
     public function update($productId, $id, array $params)
     {
-        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
 
         return $this->setParams($params)->sendRequest('PUT', $url);
     }
