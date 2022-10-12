@@ -32,35 +32,35 @@ class ProductImage implements ProductImageInterface
 
     public function get($productId, $offset = 0, $limit = 50)
     {
-        $url = sprintf('%s/%s/%s?offset=%s&limit=%s', $this->anymarket->getEndpoint(), $this->service, $productId, $offset, $limit);
+        $url = sprintf('%s/%s/%s/images?offset=%s&limit=%s', $this->anymarket->getEndpoint(), $this->service, $productId, $offset, $limit);
 
         return $this->sendRequest('GET', $url);
     }
 
     public function create($productId, array $params)
     {
-        $url = sprintf('%s/%s/%s', $this->anymarket->getEndpoint(), $this->service, $productId);
+        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $productId);
 
         return $this->setParams($params)->sendRequest('POST', $url);
     }
 
     public function update($productId, $id, array $params)
     {
-        $url = sprintf('%s/%s/%s/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
 
         return $this->setParams($params)->sendRequest('PUT', $url);
     }
 
     public function find($productId, $id)
     {
-        $url = sprintf('%s/%s/%s/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
 
         return $this->sendRequest('GET', $url);
     }
 
     public function delete($productId, $id)
     {
-        $url = sprintf('%s/%s/%s/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
 
         return $this->sendRequest('DELETE', $url);
     }
