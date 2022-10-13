@@ -2,11 +2,10 @@
 
 namespace Yampi\Anymarket\Services;
 
-use Closure;
 use Yampi\Anymarket\Anymarket;
 use Yampi\Anymarket\Contracts\ProductImageInterface;
 
-class ProductImage implements ProductImageInterface
+class ProductImage extends BaseRequest implements ProductImageInterface
 {
     protected $params;
 
@@ -23,6 +22,13 @@ class ProductImage implements ProductImageInterface
         $this->http = $http;
     }
 
+    public function setProduct($product)
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
     public function setParams(array $value)
     {
         $this->params = $value;
@@ -30,62 +36,38 @@ class ProductImage implements ProductImageInterface
         return $this;
     }
 
-    public function get($productId, $offset = 0, $limit = 50)
+    public function get($offset = 0, $limit = 50)
     {
-        $url = sprintf('%s/%s/%s/images?offset=%s&limit=%s', $this->anymarket->getEndpoint(), $this->service, $productId, $offset, $limit);
+        $url = sprintf('%s/%s/%s/images?offset=%s&limit=%s', $this->anymarket->getEndpoint(), $this->service, $this->product, $offset, $limit);
 
         return $this->sendRequest('GET', $url);
     }
 
-    public function create($productId, array $params)
+    public function create( array $params)
     {
-        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $productId);
+        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $this->product);
 
         return $this->setParams($params)->sendRequest('POST', $url);
     }
 
-    public function update($productId, $id, array $params)
+    public function update($id, array $params)
     {
-        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images', $this->anymarket->getEndpoint(), $this->service, $this->product, $id);
 
         return $this->setParams($params)->sendRequest('PUT', $url);
     }
 
-    public function find($productId, $id)
+    public function find($id)
     {
-        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $this->product, $id);
 
         return $this->sendRequest('GET', $url);
     }
 
-    public function delete($productId, $id)
+    public function delete($id)
     {
-        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $productId, $id);
+        $url = sprintf('%s/%s/%s/images/%s', $this->anymarket->getEndpoint(), $this->service, $this->product, $id);
 
         return $this->sendRequest('DELETE', $url);
-    }
-
-    /**
-     * @param string $method
-     * @param string $url
-     * @return mixed
-     * @throws Yampi\Anymarket\Exceptions\AnymarketException
-     * @throws Yampi\Anymarket\Exceptions\AnymarketValidationException
-     */
-    public function sendRequest($method, $url)
-    {
-        return $this->anymarket->getRequestHandler()->handle(Closure::bind(function() use ($method, $url) {
-            $requestParams = [];
-
-            if (in_array($method, ['PUT', 'POST'])) {
-                $requestParams = [
-                    'json' => $this->params,
-                ];
-            }
-
-            $request = $this->http->request($method, $url, $requestParams);
-
-            return json_decode($request->getBody()->getContents(), true);
-        }, $this));
     }
 }

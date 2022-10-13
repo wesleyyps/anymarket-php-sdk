@@ -13,7 +13,8 @@
         }
     },
     "require": {
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "psr/log": "1.1.4"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.3",

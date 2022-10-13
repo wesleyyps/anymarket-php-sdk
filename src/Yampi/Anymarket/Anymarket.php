@@ -3,6 +3,7 @@
 namespace Yampi\Anymarket;
 
 use GuzzleHttp\Client as Client;
+use Psr\Log\LoggerInterface;
 use Yampi\Anymarket\Contracts\RequestHandlerInterface;
 use Yampi\Anymarket\Services\RequestHandler;
 use Yampi\Anymarket\Services\Brand;
@@ -47,7 +48,9 @@ class Anymarket
 
     protected $requestHandler;
 
-    public function __construct($token, Environment $environment, $http = null, RequestHandlerInterface $requestHandler = null)
+    protected $logger;
+
+    public function __construct($token, Environment $environment, $http = null, LoggerInterface $logger = null, RequestHandlerInterface $requestHandler = null)
     {
         if (is_null($requestHandler)) {
             $requestHandler = new RequestHandler();
@@ -74,6 +77,7 @@ class Anymarket
         $this->variationValue = new VariationValue($this, $this->http);
         $this->callback = new Callback($this, $this->http);
         $this->productImage = new ProductImage($this, $this->http);
+        $this->logger = $logger;
     }
 
     public function getToken()
@@ -147,5 +151,10 @@ class Anymarket
     public function getRequestHandler()
     {
         return $this->requestHandler;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }

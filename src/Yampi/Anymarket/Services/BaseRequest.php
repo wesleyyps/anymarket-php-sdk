@@ -74,6 +74,11 @@ abstract class BaseRequest implements BaseRequestInterface
      */
     public function sendRequest($method, $url)
     {
+        if (!is_null($this->anymarket->getLogger())) {
+            $this->anymarket->getLogger()->debug(sprintf('%s %s', $method, $url), [
+                'params' => $this->params
+            ]);
+        }
         return $this->anymarket->getRequestHandler()->handle(Closure::bind(function() use ($method, $url) {
             $requestParams = [];
 
