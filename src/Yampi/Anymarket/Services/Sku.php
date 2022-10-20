@@ -92,6 +92,18 @@ class Sku extends BaseRequest implements SkuInterface
         return $this->update($id, $params);
     }
 
+    public function updatePartnerId($id, $partnerId)
+    {
+        if (!$this->product) {
+            throw new AnymarketException('É necessarios utilizar o setProduct para atribuir um produto !', 400);
+        }
+
+        $params = $this->find($id);
+        $params['partnerId'] = $partnerId;
+
+        return $this->update($id, $params);
+    }
+
     public function delete($id)
     {
         throw new AnymarketException('Request method DELETE not supported', 500);
