@@ -15,4 +15,6 @@ interface OrderInterface
     public function feed();
 
     public function feedUpdate($id, $token);
+
+    public function printTag($id, $tagType, $file = null);
 }
