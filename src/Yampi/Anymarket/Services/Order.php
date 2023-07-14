@@ -49,7 +49,7 @@ class Order extends BaseRequest implements OrderInterface
 
     public function printTag($id, $tagType, $file = null)
     {
-        $url = sprintf('%s/%s/%s', $this->anymarket->getEndpoint(), 'printtag', $id);
+        $url = sprintf('%s/%s/%s', $this->anymarket->getEndpoint(), 'printtag', $tagType);
         if (!is_null($file)) {
             $url.= '?file='.$file;
         }
