@@ -47,13 +47,13 @@ class Order extends BaseRequest implements OrderInterface
         return $this->setParams($params)->sendRequest('PUT', $url);
     }
 
-    public function printTag($id, $tagType, $file = null)
+    public function printTag($list, $tagType, $file = null)
     {
         $url = sprintf('%s/%s/%s', $this->anymarket->getEndpoint(), 'printtag', $tagType);
         if (!is_null($file)) {
             $url.= '?file='.$file;
         }
-        return $this->setParams(['orders' => $id])->sendRequest('POST', $url);
+        return $this->setParams(['orders' => $list])->sendRequest('POST', $url);
     }
 
     public function update($id, array $params)
