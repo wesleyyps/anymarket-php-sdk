@@ -17,4 +17,6 @@ interface OrderInterface
     public function feedUpdate($id, $token);
 
     public function printTag($id, $tagType, $file = null);
+
+    public function updateInvoiceDocumentContents($id, $content);
 }

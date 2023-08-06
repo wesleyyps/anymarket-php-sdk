@@ -56,10 +56,10 @@ class Order extends BaseRequest implements OrderInterface
         return $this->setParams(['orders' => $list])->sendRequest('POST', $url);
     }
 
-    public function invoiceNfe($id, $nfeContent)
+    public function updateInvoiceDocumentContents($id, $content)
     {
         $url = sprintf('%s/%s/%s/%s', $this->anymarket->getEndpoint(), 'orders', $id, 'nfe');
-        return $this->setParams($nfeContent)->sendRequest('PUT', $url, [
+        return $this->setParams($content)->sendRequest('PUT', $url, [
             'Content-Type' => 'application/xml'
         ]);
     }
