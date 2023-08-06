@@ -23,7 +23,7 @@ abstract class BaseRequest implements BaseRequestInterface
         $this->http = $http;
     }
 
-    public function setParams(array $value)
+    public function setParams($value)
     {
         $this->params = $value;
 
@@ -72,25 +72,36 @@ abstract class BaseRequest implements BaseRequestInterface
      * @throws Yampi\Anymarket\Exceptions\AnymarketException
      * @throws Yampi\Anymarket\Exceptions\AnymarketValidationException
      */
-    public function sendRequest($method, $url)
+    public function sendRequest($method, $url, $headers = [])
     {
         if (!is_null($this->anymarket->getLogger())) {
             $this->anymarket->getLogger()->debug(sprintf('%s %s', $method, $url), [
-                'params' => $this->params
+                'params' => is_array($headers) && isset($headers['Content-Type']) && $headers['Content-Type'] == 'application/xml'  
+                    ? substr($this->params, 0, 255) . '(truncated)' 
+                    : $this->params,
+                'headers' => $headers
             ]);
         }
-        return $this->anymarket->getRequestHandler()->handle(Closure::bind(function() use ($method, $url) {
+        return $this->anymarket->getRequestHandler()->handle(Closure::bind(function() use ($method, $url, $headers) {
+            $hasHeaders = count($headers) > 0;
+
             $requestParams = [];
 
-            if (in_array($method, ['PUT', 'POST'])) {
-                $requestParams = [
-                    'json' => $this->params,
-                ];
+            if ($hasHeaders) {
+                $requestParams['headers'] = $headers;
             }
 
-            $request = $this->http->request($method, $url, $requestParams);
+            if (in_array($method, ['PUT', 'POST'])) {
+                if ($hasHeaders && $headers['Content-Type'] == 'application/xml') {
+                    $requestParams['body'] = $this->params;
+                } else {
+                    $requestParams['json'] = $this->params;
+                }
+            }
 
-            return json_decode($request->getBody()->getContents(), true);
+            $response = $this->http->request($method, $url, $requestParams);
+
+            return json_decode($response->getBody()->getContents(), true);
         }, $this));
     }
 }

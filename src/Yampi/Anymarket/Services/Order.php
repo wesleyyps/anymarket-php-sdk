@@ -56,6 +56,14 @@ class Order extends BaseRequest implements OrderInterface
         return $this->setParams(['orders' => $list])->sendRequest('POST', $url);
     }
 
+    public function invoiceNfe($id, $nfeContent)
+    {
+        $url = sprintf('%s/%s/%s/%s', $this->anymarket->getEndpoint(), 'orders', $id, 'nfe');
+        return $this->setParams($nfeContent)->sendRequest('PUT', $url, [
+            'Content-Type' => 'application/xml'
+        ]);
+    }
+
     public function update($id, array $params)
     {
         throw new AnymarketException('Request method update not supported', 500);
