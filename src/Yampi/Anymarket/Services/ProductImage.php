@@ -7,7 +7,7 @@ use Yampi\Anymarket\Contracts\ProductImageInterface;
 
 class ProductImage extends BaseRequest implements ProductImageInterface
 {
-    protected $params;
+    protected $product;
 
     protected $service;
 
@@ -25,13 +25,6 @@ class ProductImage extends BaseRequest implements ProductImageInterface
     public function setProduct($product)
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function setParams(array $value)
-    {
-        $this->params = $value;
 
         return $this;
     }
