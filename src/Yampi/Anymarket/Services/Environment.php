@@ -25,6 +25,6 @@ class Environment implements EnvironmentInterface
 
     public static function production()
     {
-        return new self('http://api.anymarket.com.br/v2');
+        return new self('https://api.anymarket.com.br/v2');
     }
 }

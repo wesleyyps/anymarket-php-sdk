@@ -100,8 +100,14 @@ abstract class BaseRequest implements BaseRequestInterface
             }
 
             $response = $this->http->request($method, $url, $requestParams);
-
-            return json_decode($response->getBody()->getContents(), true);
+            $responseBody = $response->getBody()->getContents();
+            if (!is_null($this->anymarket->getLogger())) {
+                $this->anymarket->getLogger()->debug(sprintf('%s %s RESPONSE', $method, $url), [
+                    $responseBody
+                ]);
+            }
+            $jsonDecoded = json_decode($responseBody, true);
+            return $response->getHeader('Content-Type') == 'application/json' ? $jsonDecoded : ($jsonDecoded === null ? $responseBody : $jsonDecoded);
         }, $this));
     }
 }
